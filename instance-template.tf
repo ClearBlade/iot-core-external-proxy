@@ -2,7 +2,10 @@ resource "google_compute_instance_template" "haproxy_template" {
   name        = "haproxy-template"
   description = "This is HAProxy template instance"
   tags        = ["haproxy", "clearblade"]
-
+  labels = {
+    app       = "clearblade"
+    component = "haproxy"
+  }
   instance_description = "HA proxy node"
   machine_type         = "e2-medium"
   can_ip_forward       = false
@@ -27,11 +30,13 @@ resource "google_compute_instance_template" "haproxy_template" {
   }
   metadata_startup_script = data.local_file.haproxy_config.content
   metadata = {
-    CERTIFICATE_KEY_SECRET_NAME = element(split("/",google_secret_manager_secret.certificate-key.name),3)
-    CERTIFICATE_SECRET_NAME     = element(split("/",google_secret_manager_secret.certificate.name), 3)
+    CERTIFICATE_KEY_SECRET_NAME = element(split("/", google_secret_manager_secret.certificate-key.name), 3)
+    CERTIFICATE_SECRET_NAME     = element(split("/", google_secret_manager_secret.certificate.name), 3)
     CLEARBLADE_IP               = var.clearblade_ip
+    CLEARBLADE_MQTT_IP          = var.clearblade_mqtt_ip
   }
-  depends_on = [google_service_account.haproxy-compute-svc,
+  depends_on = [
+    google_service_account.haproxy-compute-svc,
     google_secret_manager_secret_version.certificate,
     google_secret_manager_secret_version.certificate-key,
     google_compute_subnetwork.clearblade-subnetwork
@@ -39,5 +44,5 @@ resource "google_compute_instance_template" "haproxy_template" {
 }
 
 data "local_file" "haproxy_config" {
-  filename = "${path.module}/haproxy.cfg"
+  filename = "${path.module}/startup.sh"
 }
