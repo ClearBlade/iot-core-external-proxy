@@ -26,7 +26,7 @@ resource "google_secret_manager_secret_version" "certificate-key" {
 resource "google_secret_manager_secret_version" "certificate" {
   secret = google_secret_manager_secret.certificate.id
 
-  secret_data = data.local_file.certificate-key.content
+  secret_data = data.local_file.certificate.content
   depends_on = [google_secret_manager_secret.certificate]
 }
 

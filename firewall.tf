@@ -3,10 +3,25 @@ resource "google_compute_firewall" "haproxy-firewall" {
   network = google_compute_network.clearblade-network.name
   allow {
     protocol = "tcp"
-    ports    = ["443", "1884", "8080", "8903", "8904", "8905", "8906"]
+    ports    = ["443", "1884", "8080", "8443", "8903", "8904", "8905", "8906"]
   }
   target_tags   = google_compute_instance_template.haproxy_template.tags
   source_ranges = ["0.0.0.0/0"]
+  depends_on = [
+    google_compute_instance_template.haproxy_template,
+    google_compute_network.clearblade-network
+  ]
+}
+
+resource "google_compute_firewall" "iap-ssh-allow" {
+  name    = "iap-ssh-allow"
+  network = google_compute_network.clearblade-network.name
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  target_tags   = google_compute_instance_template.haproxy_template.tags
+  source_ranges = ["35.235.240.0/20"]
   depends_on = [
     google_compute_instance_template.haproxy_template,
     google_compute_network.clearblade-network

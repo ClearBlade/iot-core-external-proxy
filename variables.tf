@@ -12,3 +12,8 @@ variable "clearblade_ip" {
   description = "Clearblade endpoint"
   type        = string
 }
+
+variable "clearblade_mqtt_ip" {
+  description = "Clearblade MQTT endpoint"
+  type = string
+}
