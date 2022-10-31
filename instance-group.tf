@@ -5,11 +5,11 @@ resource "google_compute_health_check" "auto-healing" {
   healthy_threshold   = 2
   unhealthy_threshold = 10
 
-  https_health_check {
-    request_path = "/api/about"
-    port         = 443
+  tcp_health_check {
+    port = "443"
   }
 }
+
 resource "google_compute_region_instance_group_manager" "haproxy-group" {
   name               = "haproxy-instance-group"
   description        = "HAProxy instance group"
@@ -46,7 +46,7 @@ resource "google_compute_region_instance_group_manager" "haproxy-group" {
     initial_delay_sec = 300
   }
   target_pools = [google_compute_target_pool.target-pool.id]
-  target_size  = 1
+  target_size  = var.instances
   depends_on = [
     google_compute_target_pool.target-pool,
     google_compute_health_check.auto-healing,

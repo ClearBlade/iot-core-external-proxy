@@ -15,5 +15,11 @@ variable "clearblade_ip" {
 
 variable "clearblade_mqtt_ip" {
   description = "Clearblade MQTT endpoint"
-  type = string
+  type        = string
+}
+
+variable "instances" {
+  description = "Instances of HAProxy"
+  type        = number
+  default     = 2
 }
