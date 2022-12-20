@@ -94,6 +94,8 @@ listen mqtt_auth
 listen mqtt
      mode tcp
      option tcplog
+     timeout client 1200s
+     timeout server 1200s
      bind *:8883 ssl crt $CERTIFICATE
      bind *:443 ssl crt $CERTIFICATE
      server clearblade \$CLEARBLADE_MQTT_IP:443 check inter 10000 ssl verify none
